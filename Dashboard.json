@@ -1,0 +1,407 @@
+[
+    {
+        "id": "370701eb3c9276d0",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a16710f9f58fddb4",
+        "type": "mqtt in",
+        "z": "370701eb3c9276d0",
+        "name": "",
+        "topic": "telecom/tower/data",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5d1c81e7e43403e1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 250,
+        "y": 300,
+        "wires": [
+            [
+                "d620cfbf44378839",
+                "80a39af516a6c2e9",
+                "c885b4835f1aa57d",
+                "5a7b09446afd125b",
+                "cdc8f958b435bfe9"
+            ]
+        ]
+    },
+    {
+        "id": "d620cfbf44378839",
+        "type": "debug",
+        "z": "370701eb3c9276d0",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "80a39af516a6c2e9",
+        "type": "function",
+        "z": "370701eb3c9276d0",
+        "name": "function 1",
+        "func": "let values = msg.payload.split(\",\");\n\nreturn [\n    { payload: Number(values[0]) },\n    { payload: Number(values[1]) },\n    { payload: Number(values[2]) }\n];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 180,
+        "wires": [
+            [
+                "5d489c5be88aeb94"
+            ],
+            [
+                "109ca27ecbdfbd48"
+            ],
+            [
+                "6f3b42f0d7810c5a"
+            ]
+        ]
+    },
+    {
+        "id": "5d489c5be88aeb94",
+        "type": "ui_gauge",
+        "z": "370701eb3c9276d0",
+        "name": "Battery",
+        "group": "e565f0a8acf57008",
+        "order": 4,
+        "width": 7,
+        "height": 5,
+        "gtype": "gage",
+        "title": "Battery Voltage",
+        "label": "V",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "15",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 820,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "109ca27ecbdfbd48",
+        "type": "ui_gauge",
+        "z": "370701eb3c9276d0",
+        "name": "Temperature",
+        "group": "e565f0a8acf57008",
+        "order": 5,
+        "width": 7,
+        "height": 5,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 830,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "6f3b42f0d7810c5a",
+        "type": "ui_gauge",
+        "z": "370701eb3c9276d0",
+        "name": "RSSI",
+        "group": "e565f0a8acf57008",
+        "order": 6,
+        "width": 7,
+        "height": 5,
+        "gtype": "gage",
+        "title": "Signal",
+        "label": "dBm",
+        "format": "{{value}}",
+        "min": "-100",
+        "max": "0",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 810,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c885b4835f1aa57d",
+        "type": "function",
+        "z": "370701eb3c9276d0",
+        "name": "function 2",
+        "func": "let values = msg.payload.split(\",\");\n\nlet battery = Number(values[0]);\nlet temp = Number(values[1]);\nlet rssi = Number(values[2]);\n\nif (battery < 12 || temp > 70 || rssi < -80) {\n    msg.payload = \"🔴 CRITICAL\";\n}\nelse if (temp > 60 || rssi < -70) {\n    msg.payload = \"🟡 WARNING\";\n}\nelse {\n    msg.payload = \"🟢 GOOD\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 240,
+        "wires": [
+            [
+                "8fbb3ecfde5f66f2"
+            ]
+        ]
+    },
+    {
+        "id": "8fbb3ecfde5f66f2",
+        "type": "ui_text",
+        "z": "370701eb3c9276d0",
+        "group": "e565f0a8acf57008",
+        "order": 2,
+        "width": 11,
+        "height": 1,
+        "name": "",
+        "label": "Tower Status",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "className": "",
+        "style": true,
+        "font": "Arial Black,Arial Black,Gadget,sans-serif",
+        "fontSize": "18",
+        "color": "#ffffff",
+        "x": 830,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "92e61e2c35f4a66c",
+        "type": "ui_chart",
+        "z": "370701eb3c9276d0",
+        "name": "",
+        "group": "e565f0a8acf57008",
+        "order": 7,
+        "width": 21,
+        "height": 8,
+        "label": "RSSI History",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "2",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#0092fa",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 830,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5a7b09446afd125b",
+        "type": "function",
+        "z": "370701eb3c9276d0",
+        "name": "function 3",
+        "func": "let values = msg.payload.split(\",\");\n\nmsg.payload = Number(values[2]);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 300,
+        "wires": [
+            [
+                "92e61e2c35f4a66c"
+            ]
+        ]
+    },
+    {
+        "id": "cdc8f958b435bfe9",
+        "type": "function",
+        "z": "370701eb3c9276d0",
+        "name": "function 4",
+        "func": "msg.payload = new Date().toLocaleString();\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 360,
+        "wires": [
+            [
+                "25d91ab1c357179a"
+            ]
+        ]
+    },
+    {
+        "id": "25d91ab1c357179a",
+        "type": "ui_text",
+        "z": "370701eb3c9276d0",
+        "group": "e565f0a8acf57008",
+        "order": 3,
+        "width": 10,
+        "height": 1,
+        "name": "",
+        "label": "Last Update",
+        "format": "{{msg.payload}}",
+        "layout": "row-right",
+        "className": "",
+        "style": true,
+        "font": "",
+        "fontSize": "20",
+        "color": "#ffffff",
+        "x": 830,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "4fe5eced08457088",
+        "type": "ui_template",
+        "z": "370701eb3c9276d0",
+        "group": "e565f0a8acf57008",
+        "name": "Title ",
+        "order": 1,
+        "width": 21,
+        "height": 2,
+        "format": "<div class=\"dashboard-header-container\">\n    <div class=\"main-title-row\">\n        <!-- Minimalistic SVG Telecom Tower Icon -->\n        <svg class=\"tower-svg-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"\n            stroke-linecap=\"round\" stroke-linejoin=\"round\">\n            <path\n                d=\"M12 2a10 10 0 0 1 10 10c0 2.49-1 4.74-2.6 6.4L18 17a7.5 7.5 0 0 0 .5-2.5 7.5 7.5 0 0 0-13 0c0 .9.16 1.75.47 2.5L4.6 18.4A9.9 9.9 0 0 1 2 12 10 10 0 0 1 12 2z\" />\n            <path\n                d=\"M12 7a5 5 0 0 1 5 5c0 1.15-.39 2.2-1.03 3L14.51 13.5a1.5 1.5 0 1 0-5.02 0L8.03 15A4.97 4.97 0 0 1 7 12a5 5 0 0 1 5-5z\" />\n            <circle cx=\"12\" cy=\"12\" r=\"1\" fill=\"currentColor\" />\n            <path d=\"M12 12v10M9 22h6\" />\n        </svg>\n        <h1 class=\"main-title-text\">Smart Telecom Tower Monitoring System</h1>\n    \n\n<style>\n    .dashboard-header-container {\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: center;\n        width: 100%;\n        padding: 8px 0;\n        background: transparent;\n    }\n\n    .main-title-row {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        gap: 12px;\n        margin-bottom: 2px;\n    }\n\n    .tower-svg-icon {\n        width: 28px;\n        height: 28px;\n        color: #ffffff;\n    }\n\n    .main-title-text {\n        color: #ffffff;\n        font-size: 22px;\n        font-weight: 500;\n        margin: 0;\n        font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n    }\n\n    .subtitle-text {\n        color: #00b4d8;\n        /* Matching the vibrant cyan tone from the example screenshot */\n        font-size: 13px;\n        font-weight: 400;\n        letter-spacing: 0.5px;\n        font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 550,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7be970c5e6221566",
+        "type": "ui_template",
+        "z": "370701eb3c9276d0",
+        "group": "e565f0a8acf57008",
+        "name": "",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    body {\n        background-color: #1e1e1e !important;\n        color: #ffffff !important;\n    }\n\n    .nr-dashboard-theme {\n        background-color: #1e1e1e !important;\n    }\n\n    .nr-dashboard-cardpanel {\n        background-color: #2b2b2b !important;\n    }\n\n    .ui-card-panel {\n        background-color: #2b2b2b !important;\n        color: white !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 680,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5d1c81e7e43403e1",
+        "type": "mqtt-broker",
+        "name": "mqtt serverrrr",
+        "broker": "test.mosquitto.org",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "e565f0a8acf57008",
+        "type": "ui_group",
+        "name": "Dashboard",
+        "tab": "b526071ca744df76",
+        "order": 1,
+        "disp": true,
+        "width": 21,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b526071ca744df76",
+        "type": "ui_tab",
+        "name": "Monitoring System",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "bdedb006fd55ef0f",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]
