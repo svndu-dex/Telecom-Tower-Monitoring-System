@@ -22,7 +22,7 @@ A real-time IoT monitoring system built using ESP32, MQTT, and Node-RED.
 
 ## Dashboard
 
-![Dashboard](images/dashboard.png)
+![Dashboard](images/Dashboard.png)
 
 ## Node-RED Flow
 
